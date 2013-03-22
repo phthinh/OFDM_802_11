@@ -27,9 +27,9 @@ fprintf(fid, '%d ', bit_symbols);
 fclose(fid);
 
 %write Preamble ===========================================================
-preamble_802_11;   
+[DL_preamble, UL_preamble, pre64, pre128, peven] = preamble_802_16();   
 %DL_preamble_nor = DL_preamble ./ max(abs(DL_preamble));
-DL_preamble_nor = [short_pre long_pre];
+DL_preamble_nor = DL_preamble;
 
 Preamble_rtl = DL_preamble_nor .*(2^15);
 Preamble_Re  = typecast(int16(real(Preamble_rtl)),'uint16');
