@@ -28,7 +28,7 @@ wire 			 ack_o;
 wire 	[31:0] dat_out;
 wire			 we_o, stb_o, cyc_o;
 
-OFDM_TX UUT(
+OFDM_TX_802_11 UUT(
 	.CLK_I(clk), .RST_I(rst),
 	.DAT_I(dat_in),
 	.WE_I(we_i), 

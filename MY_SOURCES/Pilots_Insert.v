@@ -29,8 +29,8 @@ module Pilots_Insert(
 	output			WE_O,
 	input				ACK_I	
     );
-parameter P_P = 16'h5A82;	// +1/aqrt(2) in Q1.15
-parameter P_N = 16'hA57E;	// -1/aqrt(2) in Q1.15 
+parameter P_P = 16'h7fff;	// +1 in Q1.15
+parameter P_N = 16'h8001;	// -1 in Q1.15 
 reg 		 Pil 	 [0:127];   // signed bit of real part of pilots,
 initial $readmemh("./MY_SOURCES/Pilot_seq.txt", Pil);
 	 
@@ -41,7 +41,7 @@ wire 			out_halt, ena;
 wire			datout_ack;
 
 
-reg [7:0]	dat_cnt;
+reg [5:0]	dat_cnt;
 reg [6:0]	pilot_cnt;
 reg			pil_insert_ena;
 reg			nul_insert_ena;		//inserting null symbol for guarding.
@@ -92,8 +92,8 @@ assign WE_O  = STB_O;
 
 always@(posedge CLK_I)
 begin
-	if(RST_I)										dat_cnt	<= 8'd0;		
-	else if(CYC_I & (~icyc))					dat_cnt	<= 8'd0;
+	if(RST_I)										dat_cnt	<= 6'd0;		
+	else if(CYC_I & (~icyc))					dat_cnt	<= 6'd0;
 	else if(datout_ack)						   dat_cnt	<= dat_cnt + 1'b1;
 end
 
@@ -110,8 +110,8 @@ always@(dat_cnt) begin
 	pil_insert_ena  = 1'b0;
 //	nul_insert_ena  = 1'b0;
 	case (dat_cnt)
-		//8'd0:																				nul_insert_ena  = 1'b1;
-		8'd12, 8'd37, 8'd62, 8'd87, 8'd167, 8'd192, 8'd217, 8'd242: 	pil_insert_ena  = 1'b1;
+		//8'd0:								nul_insert_ena  = 1'b1;
+		6'd6, 6'd20, 6'd42, 6'd56: 	pil_insert_ena  = 1'b1;
 		
 		default: begin
 					pil_insert_ena  = 1'b0;
@@ -125,10 +125,10 @@ begin
 	if(RST_I)													nul_insert_ena  = 1'b0;		
 	else if(CYC_I & (~icyc))								nul_insert_ena  = 1'b0;	
 	else if(icyc & (~CYC_O))								nul_insert_ena  = 1'b1;
-	else if(datout_ack & (dat_cnt == 8'd0))			nul_insert_ena  = 1'b0;
-	else if(datout_ack & (dat_cnt == 8'd100))			nul_insert_ena  = 1'b1;	
-	else if(datout_ack & (dat_cnt == 8'd155))			nul_insert_ena  = 1'b0;	
-	else if(icyc & datout_ack & (dat_cnt == 8'd255))nul_insert_ena  = 1'b1;	
+	else if(datout_ack & (dat_cnt == 6'd0))			nul_insert_ena  = 1'b0;
+	else if(datout_ack & (dat_cnt == 6'd26))			nul_insert_ena  = 1'b1;	
+	else if(datout_ack & (dat_cnt == 6'd37))			nul_insert_ena  = 1'b0;	
+	else if(icyc & datout_ack & (dat_cnt == 8'd63)) nul_insert_ena  = 1'b1;	
 end
 
 

@@ -31,7 +31,7 @@ module Tx_Out(
 	input					ACK_I	
     );
 	 
-reg [31:0] Pre[0:575]; 
+reg [31:0] Pre[0:319]; 
 initial $readmemh("./MY_SOURCES/Pre.txt", Pre); 
 
 reg [31:0]	idat;
@@ -74,21 +74,21 @@ always @(posedge CLK_I)
 begin
 	if(RST_I)																pre_cnt <= 10'd0;
 	else if (CYC_I & (~icyc)) 											pre_cnt <= 10'd0;	
-	else if (icyc & (~out_halt) & (~(pre_cnt == 10'd576)))	pre_cnt <= pre_cnt + 1'b1;
+	else if (icyc & (~out_halt) & (~(pre_cnt == 10'd320)))	pre_cnt <= pre_cnt + 1'b1;
 end
 
 always @(posedge CLK_I)
 begin
 	if(RST_I)										pre_ena <= 1'b0;
 	else if (CYC_I & (~icyc)) 					pre_ena <= 1'b1;	
-	else if (CYC_O & (pre_cnt == 10'd575))	pre_ena <= 1'b0;
+	else if (CYC_O & (pre_cnt == 10'd319))	pre_ena <= 1'b0;
 end
 
 always @(posedge CLK_I)
 begin
 	if(RST_I)										dat_sym_ena <= 1'b0;
 	else if (CYC_I & (~icyc)) 					dat_sym_ena <= 1'b0;	
-	else if (CYC_O & (pre_cnt == 10'd574))	dat_sym_ena <= 1'b1;
+	else if (CYC_O & (pre_cnt == 10'd318))	dat_sym_ena <= 1'b1;
 	else if (~CYC_O)								dat_sym_ena <= 1'b0;
 end 
 

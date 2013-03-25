@@ -109,9 +109,9 @@ IFFT IFFT_Ins(
 	.aclk(CLK_I), 											// input aclk
 	//.aclken(aclken), 									// input aclken
 	.aresetn(aresetn), 									// input aresetn
-	.s_axis_config_tdata(24'h00D620), 				// input [23 : 0] s_axis_config_tdata: [16:9] scale; [8]fwd_inv; [7:0]: cp_len
-																// scale: shift right 8 bits : 1, 2, 2, 3, inv = 0 
-																// config_tdata = 0000 1101 0110 0010 0000
+	.s_axis_config_tdata(16'h3610), 					// input [23 : 0] s_axis_config_tdata: [14:9] scale; [8]fwd_inv; [5:0]: cp_len
+																// scale: shift right 6 bits : 0, 1, 2, 3, inv = 0 
+																// config_tdata = 0000 0011 0110 0001 0000
 	.s_axis_config_tvalid(1'b1), 						// input s_axis_config_tvalid
 	.s_axis_config_tready(), 							// ouput s_axis_config_tready
 	.s_axis_data_tdata(idat), 							// input [31 : 0] s_axis_data_tdata

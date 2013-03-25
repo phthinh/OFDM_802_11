@@ -40,4 +40,10 @@ fid = fopen('../MY_SOURCES/Pre.txt', 'w');
 fprintf(fid, '%8x ', Pre);
 fclose(fid);
 
-
+pilots_802_11;
+Pilot_seq = reshape(pils, 1, 4*127);
+Pilot_seq = (Pilot_seq(1:128)<0)*1;
+Pre = uint32(Preamble_Im) * (2^16) + uint32(Preamble_Re);
+fid = fopen('../MY_SOURCES/Pilot_seq.txt', 'w');
+fprintf(fid, '%d ', Pilot_seq);
+fclose(fid);
