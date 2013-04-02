@@ -36,7 +36,7 @@ reg 			icyc;
 wire 			out_halt, ena;
 wire			datout_ack;
 reg			process_done;	// assert when IFFT's procees has done and begin tranmitting data symbol.
-reg [5:0] 	d_cnt;			//delay counter to delay generating the preamble in order to wait for IFFT computation
+//reg [5:0] 	d_cnt;			//delay counter to delay generating the preamble in order to wait for IFFT computation
 
 wire  		s_dat_val, s_dat_rdy;
 wire			m_dat_val, m_dat_rdy, m_dat_tlast;
@@ -69,18 +69,10 @@ end
 always @(posedge CLK_I)
 begin
 	if(RST_I)													CYC_O <= 1'b0;		
-	//else if(d_cnt == 6'd46)								CYC_O <= 1'b1;	
-	else if(d_cnt == 6'd56)									CYC_O <= 1'b1;	
+	else if(CYC_I &(~icyc))									CYC_O <= 1'b1;	
 	else if((~CYC_I) &(~m_dat_val) &	process_done)	CYC_O <= 1'b0;
 end
 
-always @(posedge CLK_I)
-begin
-	if(RST_I)										d_cnt <= 6'd0;		
-	else if(  CYC_I  &(~icyc))					d_cnt <= 6'd0;	
-	//else if(CYC_I &(~(d_cnt == 6'd47)))		d_cnt <= d_cnt + 1'd1;
-	else if(CYC_I &(~(d_cnt == 6'd57)))		d_cnt <= d_cnt + 1'd1;
-end
 always @(posedge CLK_I)
 begin
 	if(RST_I)									process_done <= 1'b0;		
