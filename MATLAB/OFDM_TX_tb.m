@@ -49,7 +49,7 @@ NS   = NDS*NLOP;
 bit_symbols = reshape(bit_symbols,NC,NS);
 %QPSK =====================================================================
 QPSK = 1- 2.*mod(bit_symbols,2) + 1i *(1- 2.*floor(bit_symbols/2));
-
+QPSK = (1/sqrt(2)) * QPSK;
 %insert subcarriers & pilots ==============================================
 % pilot ===================================================================
 pilots_802_11;
@@ -94,9 +94,9 @@ Datout_sim = reshape(tx_out, 1, (NFFT+CP)*(PRE + NDS)*NLOP);
 
 % Plotting ================================================================
 figure(1);
-plot(1:length(Pilots_Insert_sim), imag(Pilots_Insert_sim),'o-b');
+plot(1:length(Pilots_Insert_sim), real(Pilots_Insert_sim),'o-b');
 hold on
-plot(1:length(Pilots_Insert_rtl), imag(Pilots_Insert_rtl),'x-r');
+plot(1:length(Pilots_Insert_rtl), real(Pilots_Insert_rtl),'x-r');
 ylim([-3 3]);
 title('comparison of Pilots\_Insert output');
 legend('Pilots\_Insert\_sim','Pilots\_Insert\_rtl');

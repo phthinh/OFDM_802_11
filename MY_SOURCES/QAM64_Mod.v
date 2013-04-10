@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date:    14:01:15 12/04/2012 
+// Create Date:    15:39:14 04/09/2013 
 // Design Name: 
-// Module Name:    QPSK_Mod 
+// Module Name:    QAM64_Mod 
 // Project Name: 
 // Target Devices: 
 // Tool versions: 
@@ -18,9 +18,18 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module QPSK_Mod(
+`define Qn7 16'h8001
+`define Qn5 16'h9D3F
+`define Qn3 16'hC2BF
+`define Qn1 16'hEC40
+`define Qp1 16'h13C0
+`define Qp3 16'h3B41
+`define Qp5 16'h62C1
+`define Qp7 16'h7FFF
+
+module QAM64_Mod(
 	input 			CLK_I, RST_I,
-	input [1:0] 	DAT_I,
+	input [5:0] 	DAT_I,
 	input 			CYC_I, WE_I, STB_I, 
 	output			ACK_O,
 	
@@ -30,11 +39,11 @@ module QPSK_Mod(
 	input					ACK_I	
     );
 
-reg [1:0]	idat;
+reg [5:0]	idat;
 reg			ival;	
 wire 			out_halt, ena;
 
-wire [15:0] 	datout_Re, datout_Im;
+reg [15:0] 	datout_Re, datout_Im;
 
 assign 	out_halt = STB_O & (~ACK_I);
 assign 	ena 		= CYC_I & STB_I & WE_I;
@@ -43,7 +52,7 @@ assign 	ACK_O 	= ena &(~out_halt);
 
 	
 always @(posedge CLK_I) begin
-	if(RST_I) 			idat<= 2'b00;
+	if(RST_I) 			idat<= 6'b000000;
 	else if(ACK_O) 	idat <= DAT_I;
 end
 
@@ -82,32 +91,32 @@ end
 
 assign WE_O = STB_O;
 
-/*
-always @* begin	
-	case(idat)
-		2'b11: begin
-				datout_Re  <= 16'h7FFF;
-				datout_Im  <= 16'h7FFF;
-				 end
-		2'b10: begin
-				datout_Re  <= 16'h8001;
-				datout_Im  <= 16'h7FFF;
-				 end
-		2'b01: begin
-				datout_Re  <= 16'h7FFF;
-				datout_Im  <= 16'h8001;
-				 end
-		2'b00: begin
-				datout_Re  <= 16'h8001;
-				datout_Im  <= 16'h8001;
-				 end
-		default: begin
-				datout_Re  <= 16'hxxxx;
-				datout_Im  <= 16'hxxxx;
-				 end
-		endcase
+always @(*) begin
+	case (idat[5:3])
+      3'b111 :	datout_Im = `Qn7;
+		3'b110 : datout_Im = `Qn5;
+		3'b100 :	datout_Im = `Qn3;
+		3'b101 : datout_Im = `Qn1;
+		3'b001 : datout_Im = `Qp1;
+		3'b000 : datout_Im = `Qp3;
+		3'b010 : datout_Im = `Qp5;
+		3'b011 : datout_Im = `Qp7;
+		default: datout_Im = 16'd0;
+	endcase
 end
-*/
-assign datout_Im = (idat[1])?16'hA57E:16'h5A82;
-assign datout_Re = (idat[0])?16'hA57E:16'h5A82;
+
+always @(*) begin
+	case (idat[2:0])
+      3'b111 :	datout_Re = `Qn7;
+		3'b110 : datout_Re = `Qn5;
+		3'b100 :	datout_Re = `Qn3;
+		3'b101 : datout_Re = `Qn1;
+		3'b001 : datout_Re = `Qp1;
+		3'b000 : datout_Re = `Qp3;
+		3'b010 : datout_Re = `Qp5;
+		3'b011 : datout_Re = `Qp7;
+		default: datout_Re = 16'd0;
+	endcase
+end
+
 endmodule
