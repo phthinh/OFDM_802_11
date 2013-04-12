@@ -93,28 +93,28 @@ assign WE_O = STB_O;
 
 always @(*) begin
 	case (idat[5:3])
-      3'b111 :	datout_Im = `Qn7;
-		3'b110 : datout_Im = `Qn5;
-		3'b100 :	datout_Im = `Qn3;
-		3'b101 : datout_Im = `Qn1;
-		3'b001 : datout_Im = `Qp1;
-		3'b000 : datout_Im = `Qp3;
-		3'b010 : datout_Im = `Qp5;
-		3'b011 : datout_Im = `Qp7;
+      3'b000 :	datout_Im = `Qn7;
+		3'b100 : datout_Im = `Qn5;
+		3'b110 :	datout_Im = `Qn3;
+		3'b010 : datout_Im = `Qn1;
+		3'b011 : datout_Im = `Qp1;
+		3'b111 : datout_Im = `Qp3;
+		3'b101 : datout_Im = `Qp5;
+		3'b001 : datout_Im = `Qp7;
 		default: datout_Im = 16'd0;
 	endcase
 end
 
 always @(*) begin
 	case (idat[2:0])
-      3'b111 :	datout_Re = `Qn7;
-		3'b110 : datout_Re = `Qn5;
-		3'b100 :	datout_Re = `Qn3;
-		3'b101 : datout_Re = `Qn1;
-		3'b001 : datout_Re = `Qp1;
-		3'b000 : datout_Re = `Qp3;
-		3'b010 : datout_Re = `Qp5;
-		3'b011 : datout_Re = `Qp7;
+      3'b000 :	datout_Re = `Qn7;
+		3'b100 : datout_Re = `Qn5;
+		3'b110 :	datout_Re = `Qn3;
+		3'b010 : datout_Re = `Qn1;
+		3'b011 : datout_Re = `Qp1;
+		3'b111 : datout_Re = `Qp3;
+		3'b101 : datout_Re = `Qp5;
+		3'b001 : datout_Re = `Qp7;
 		default: datout_Re = 16'd0;
 	endcase
 end

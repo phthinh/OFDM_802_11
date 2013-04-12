@@ -25,7 +25,7 @@
 
 module QAM16_Mod(
 	input 			CLK_I, RST_I,
-	input [3:0] 	DAT_I,
+	input [5:0] 	DAT_I,
 	input 			CYC_I, WE_I, STB_I, 
 	output			ACK_O,
 	
@@ -49,7 +49,7 @@ assign 	ACK_O 	= ena &(~out_halt);
 	
 always @(posedge CLK_I) begin
 	if(RST_I) 			idat<= 4'b0000;
-	else if(ACK_O) 	idat <= DAT_I;
+	else if(ACK_O) 	idat <= DAT_I[3:0];
 end
 
 always @(posedge CLK_I) begin
@@ -89,9 +89,9 @@ assign WE_O = STB_O;
 
 always @(*) begin
 	case (idat[3:2])
-      2'b11  :	datout_Im = `Qn3;
+      2'b00  :	datout_Im = `Qn3;
 		2'b10  : datout_Im = `Qn1;
-		2'b00  : datout_Im = `Qp1;
+		2'b11  : datout_Im = `Qp1;
 		2'b01  : datout_Im = `Qp3;
 		default: datout_Im = 16'd0;
 	endcase
@@ -99,9 +99,9 @@ end
 
 always @(*) begin
 	case (idat[1:0])
-      2'b11  :	datout_Re = `Qn3;
+      2'b00  :	datout_Re = `Qn3;
 		2'b10  : datout_Re = `Qn1;
-		2'b00  : datout_Re = `Qp1;
+		2'b11  : datout_Re = `Qp1;
 		2'b01  : datout_Re = `Qp3;
 		default: datout_Re = 16'd0;
 	endcase

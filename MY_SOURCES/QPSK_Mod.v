@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 module QPSK_Mod(
 	input 			CLK_I, RST_I,
-	input [1:0] 	DAT_I,
+	input [5:0] 	DAT_I,
 	input 			CYC_I, WE_I, STB_I, 
 	output			ACK_O,
 	
@@ -44,7 +44,7 @@ assign 	ACK_O 	= ena &(~out_halt);
 	
 always @(posedge CLK_I) begin
 	if(RST_I) 			idat<= 2'b00;
-	else if(ACK_O) 	idat <= DAT_I;
+	else if(ACK_O) 	idat <= DAT_I[1:0];
 end
 
 always @(posedge CLK_I) begin
@@ -108,6 +108,6 @@ always @* begin
 		endcase
 end
 */
-assign datout_Im = (idat[1])?16'hA57E:16'h5A82;
-assign datout_Re = (idat[0])?16'hA57E:16'h5A82;
+assign datout_Im = (idat[1])?16'h5A82:16'hA57E;
+assign datout_Re = (idat[0])?16'h5A82:16'hA57E;
 endmodule

@@ -10,20 +10,30 @@ NS   = NDS*NLOP;   % number of symbols
 NP   = 4;        % Number of pilots in symbol –21, –7, 7, and 21
 CP   = 16;       % cyclic prefix length
 PRE  = 4;        % preamble symbol = 2
-
+MOD  = 3;        % Data modulation 0:QPSK, 1:BPSK, 2:QAM16, 3:QAM64
 
 % data in for TX ==========================================================
-bit_symbols = round(3*rand(1, NC*NS));
+switch(MOD)
+    case 1,     bit_symbols = round( 1*rand(1, NS*(NC)));       
+    case 0,     bit_symbols = round( 3*rand(1, NS*(NC)));  
+    case 2,     bit_symbols = round(15*rand(1, NS*(NC))); 
+    case 3,     bit_symbols = round(63*rand(1, NS*(NC)));        
+end
 
 Len = NC * NDS;
 %write data to file =======================================================
 fid = fopen('OFDM_TX_bit_symbols_Len.txt', 'w');
 fprintf(fid, '%d ', Len);
 fprintf(fid, '%d ', NLOP);
+fprintf(fid, '%d ', MOD);
 fclose(fid);
 
 fid = fopen('OFDM_TX_bit_symbols.txt', 'w');
 fprintf(fid, '%d ', bit_symbols);
+fclose(fid);
+
+fid = fopen('RTL_OFDM_TX_bit_symbols.txt', 'w');
+fprintf(fid, '%x ', bit_symbols);
 fclose(fid);
 
 %write Preamble ===========================================================

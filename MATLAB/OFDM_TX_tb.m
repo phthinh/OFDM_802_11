@@ -16,6 +16,7 @@ datin_fid = fopen('OFDM_TX_bit_symbols_Len.txt', 'r');
 para = fscanf(datin_fid, '%d ');
 Len  = para(1);
 NLOP = para(2);
+MOD  = para(3);
 fclose(datin_fid);
 %Read data out of RTL ====================================================
 datout_fid = fopen('RTL_OFDM_TX_datout_Re.txt', 'r');
@@ -48,24 +49,47 @@ NDS = Len / NC;
 NS   = NDS*NLOP;
 bit_symbols = reshape(bit_symbols,NC,NS);
 %QPSK =====================================================================
-QPSK = 1- 2.*mod(bit_symbols,2) + 1i *(1- 2.*floor(bit_symbols/2));
-QPSK = (1/sqrt(2)) * QPSK;
+% QPSK = 1- 2.*mod(bit_symbols,2) + 1i *(1- 2.*floor(bit_symbols/2));
+% QPSK = (1/sqrt(2)) * QPSK;
+switch(MOD)
+    case 1  %BPSK 
+            BPSK = 2.*mod(bit_symbols,2)-1;
+            dat_mod = BPSK;        
+    case 0  %QPSK 
+            QPSK = 2.*mod(bit_symbols,2)-1 + 1i *(2.*floor(bit_symbols/2)-1);
+            QPSK = QPSK *(1/sqrt(2));   
+            dat_mod = QPSK;  
+    case 2  %QAM16 
+            constel = [-3 -1 1 3] * sqrt(1/10);
+            reorder = [1 4 2 3];
+            I_cons  = mod(bit_symbols,4);
+            Q_cons  = floor(bit_symbols./4);
+            QAM16   = constel(reorder(1+I_cons)) + 1i* constel(reorder(1+Q_cons));     
+            dat_mod = QAM16;  
+    case 3  %QAM64 
+            constel = [-sqrt(42) -5 -3 -1 1 3 5 sqrt(42)] * sqrt(1/42);
+            reorder = [1 8 4 5 2 7 3 6];
+            I_cons  = mod(bit_symbols,8);
+            Q_cons  = floor(bit_symbols./8);
+            QAM64   = constel(reorder(1+I_cons)) + 1i* constel(reorder(1+Q_cons));    
+            dat_mod = QAM64;         
+end
 %insert subcarriers & pilots ==============================================
 % pilot ===================================================================
 pilots_802_11;
 Pil = repmat(pils(:,1:NDS),1,NLOP);
 symbol = zeros(NFFT,NS);
 symbol(1,:)     = zeros(1,NS);
-symbol(2:7,:)   = QPSK(1:6, :);
+symbol(2:7,:)   = dat_mod(1:6, :);
 symbol(8,:)     = Pil(1,NS);
-symbol(9:21,:)  = QPSK(7:19, :);
+symbol(9:21,:)  = dat_mod(7:19, :);
 symbol(22,:)    = Pil(2,NS);
-symbol(23:27,:) = QPSK(20:24, :);
-symbol(39:43,:) = QPSK(25:29, :);
+symbol(23:27,:) = dat_mod(20:24, :);
+symbol(39:43,:) = dat_mod(25:29, :);
 symbol(44,:)    = Pil(3,NS);
-symbol(45:57,:) = QPSK(30:42, :);
+symbol(45:57,:) = dat_mod(30:42, :);
 symbol(58,:)    = Pil(4,NS);
-symbol(59:64,:) = QPSK(43:48, :);
+symbol(59:64,:) = dat_mod(43:48, :);
 Pilots_Insert_sim = reshape(symbol, 1, NFFT*NS);
 %IFFT =================================================================
 tx_d =  ifft(symbol, NFFT);
