@@ -10,7 +10,7 @@ NS   = NDS*NLOP;   % number of symbols
 NP   = 4;        % Number of pilots in symbol –21, –7, 7, and 21
 CP   = 16;       % cyclic prefix length
 PRE  = 4;        % preamble symbol = 2
-MOD  = 3;        % Data modulation 0:QPSK, 1:BPSK, 2:QAM16, 3:QAM64
+MOD  = 0;        % Data modulation 0:QPSK, 1:BPSK, 2:QAM16, 3:QAM64
 
 % data in for TX ==========================================================
 switch(MOD)
