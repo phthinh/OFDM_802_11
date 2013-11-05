@@ -38,7 +38,7 @@ reg [31:0]	idat;
 reg			ival;	
 wire 			out_halt, ena;
 
-reg [9:0] 	pre_cnt;
+reg [8:0] 	pre_cnt;
 reg			pre_ena;
 reg			dat_sym_ena;
 
@@ -72,23 +72,23 @@ end
 
 always @(posedge CLK_I)
 begin
-	if(RST_I)																pre_cnt <= 10'd0;
-	else if (CYC_I & (~icyc)) 											pre_cnt <= 10'd0;	
-	else if (icyc & (~out_halt) & (~(pre_cnt == 10'd320)))	pre_cnt <= pre_cnt + 1'b1;
+	if(RST_I)																pre_cnt <= 9'd0;
+	else if (CYC_I & (~icyc)) 											pre_cnt <= 9'd0;	
+	else if (icyc & (~out_halt) & (~(pre_cnt == 9'd320)))	pre_cnt <= pre_cnt + 1'b1;
 end
 
 always @(posedge CLK_I)
 begin
 	if(RST_I)										pre_ena <= 1'b0;
 	else if (CYC_I & (~icyc)) 					pre_ena <= 1'b1;	
-	else if (CYC_O & (pre_cnt == 10'd319))	pre_ena <= 1'b0;
+	else if (CYC_O & (pre_cnt == 9'd319))	pre_ena <= 1'b0;
 end
 
 always @(posedge CLK_I)
 begin
 	if(RST_I)										dat_sym_ena <= 1'b0;
 	else if (CYC_I & (~icyc)) 					dat_sym_ena <= 1'b0;	
-	else if (CYC_O & (pre_cnt == 10'd318))	dat_sym_ena <= 1'b1;
+	else if (CYC_O & (pre_cnt == 9'd318))	dat_sym_ena <= 1'b1;
 	else if (~CYC_O)								dat_sym_ena <= 1'b0;
 end 
 
