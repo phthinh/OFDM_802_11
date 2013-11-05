@@ -35,7 +35,7 @@ wire 			DAT_Mod_WE_O;
 wire			DAT_Mod_STB_O;
 wire			DAT_Mod_CYC_O;
 wire			DAT_Mod_ACK_I;	
-QAM64_Mod DAT_Mod_Ins(
+QPSK_Mod DAT_Mod_Ins(
 	.CLK_I(CLK_I), .RST_I(RST_I),
 	.DAT_I(DAT_I),
 	.WE_I (WE_I), 
